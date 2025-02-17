@@ -1,2 +1,5 @@
 pywin32
 pyautogui
+win32gui
+pyscreeze
+Pillow

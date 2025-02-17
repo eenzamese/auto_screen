@@ -2,9 +2,11 @@
 import time
 import re
 import sys
+import os
 import json
 import logging
 import pathlib
+import hashlib
 import traceback
 from os import sep
 from os.path import dirname
@@ -13,7 +15,7 @@ import win32gui # type: ignore # pylint: disable=import-error
 
 
 # timeouts
-SEARCH_TMT = 3
+SEARCH_TMT = 10
 APP_TMT = 60
 
 
@@ -99,46 +101,37 @@ class WindowMgr:
 
     def get_window_pic(self):
         """put the window in the foreground"""
-        left, top, right, bot = win32gui.GetWindowRect(hwnd)
-        w = right - left
-        h = bot - top
-        hwndDC = win32gui.GetWindowDC(hwnd)
-        mfcDC  = win32ui.CreateDCFromHandle(hwndDC)
-        saveDC = mfcDC.CreateCompatibleDC()
-        saveBitMap = win32ui.CreateBitmap()
-        saveBitMap.CreateCompatibleBitmap(mfcDC, w, h)
-        saveDC.SelectObject(saveBitMap)
-        #result = windll.user32.PrintWindow(hwnd, saveDC.GetSafeHdc(), 1)
-        result = windll.user32.PrintWindow(hwnd, saveDC.GetSafeHdc(), 0)
-        print(result)
-        
-        bmpinfo = saveBitMap.GetInfo()
-        bmpstr = saveBitMap.GetBitmapBits(True)
-        
-        im = Image.frombuffer(
-            'RGB',
-            (bmpinfo['bmWidth'], bmpinfo['bmHeight']),
-            bmpstr, 'raw', 'BGRX', 0, 1)
-        
-        win32gui.DeleteObject(saveBitMap.GetHandle())
-        saveDC.DeleteDC()
-        mfcDC.DeleteDC()
-        win32gui.ReleaseDC(hwnd, hwndDC)
-        
-        if result == 1:
-            #PrintWindow Succeeded
-            im.save("test.png")
+        hwnd = self._handle
+        x, y, x1, y1 = win32gui.GetClientRect(hwnd)
+        x, y = win32gui.ClientToScreen(hwnd, (x, y))
+        x1, y1 = win32gui.ClientToScreen(hwnd, (x1 - x, y1 - y))
+        im = pyautogui.screenshot(region=(x, y, x1, y1))
+        print(type(im))
+        im_hash = hashlib.md5(im.tobytes()).hexdigest()
+        print(im_hash)
+        return(im_hash)
+
 # run
 w = WindowMgr()
+md5pic_old = None
+flag = 0
 while True:
     try:
         logger.info('Searching window')
+        print(WINDOW_TITLE_RGX)
         w.find_window_wildcard(WINDOW_TITLE_RGX)
         logger.info('Setting window foreground')
         w.set_foreground()
         time.sleep(SEARCH_TMT)
         logger.info('Save picture')
-        w.get_window_pic()
+        md5pic_new = w.get_window_pic()
+        if md5pic_new != md5pic_old:
+            md5pic_old = md5pic_new
+            flag = 0
+        else:
+            flag+=1
+        if flag > 3:
+            os.system("shutdown /r")
         logger.info('Picture successfully saved')
         time.sleep(60)
     except Exception as ex: # pylint: disable=broad-exception-caught
