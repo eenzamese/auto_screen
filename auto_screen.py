@@ -46,7 +46,7 @@ logging.basicConfig(format=LOG_FMT_STRING,
 
 
 # load configuration
-CONFIG_PATH = f'{app_path}{sep}auto.config'
+CONFIG_PATH = f'{app_path}{sep}auto_screen.config'
 logger.info('Configurations file is %s', CONFIG_PATH)
 
 
