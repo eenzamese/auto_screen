@@ -127,14 +127,16 @@ while True:
         logger.info('md5pic_new %s', str(md5pic_new))
         if md5pic_new != md5pic_old:
             logger.info('Hash differ')
-            md5pic_old = md5pic_new
             logger.info('md5pic_new %s', str(md5pic_new))
             logger.info('md5pic_old %s', str(md5pic_old))
+            md5pic_old = md5pic_new
             logger.info('flag on hash differ %s', flag)
             flag = 0
+            logger.info('flag on hash differ set %s', flag)
         else:
             logger.info('flag on hash same %s', flag)
             flag+=1
+            logger.info('flag on hash same set %s', flag)
         if flag > 3:
             os.system("shutdown /r")
         logger.info('Picture successfully saved')
