@@ -16,7 +16,7 @@ exe = EXE(
     a.binaries,
     a.zipfiles,
     a.datas,
-    name='auto',
+    name='auto_screen',
     debug=False,
     strip=False,
     upx=True,
