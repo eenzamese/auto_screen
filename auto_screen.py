@@ -122,13 +122,18 @@ while True:
         w.find_window_wildcard(WINDOW_TITLE_RGX)
         logger.info('Setting window foreground')
         w.set_foreground()
-        time.sleep(SEARCH_TMT)
-        logger.info('Save picture')
+        logger.info('Saving picture')
         md5pic_new = w.get_window_pic()
+        logger.info('md5pic_new %s', str(md5pic_new))
         if md5pic_new != md5pic_old:
+            logger.info('Hash differ')
             md5pic_old = md5pic_new
+            logger.info('md5pic_new %s', str(md5pic_new))
+            logger.info('md5pic_old %s', str(md5pic_old))
+            logger.info('flag on hash differ %s', flag)
             flag = 0
         else:
+            logger.info('flag on hash same %s', flag)
             flag+=1
         if flag > 3:
             os.system("shutdown /r")
