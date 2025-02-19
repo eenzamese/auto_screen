@@ -17,14 +17,14 @@ import win32gui # type: ignore # pylint: disable=import-error
 # timeouts
 SEARCH_TMT = 10
 APP_TMT = 60
-
+APP_TMT_START = 300
 
 # check environment
 if getattr(sys, 'frozen', False):
     app_path = dirname(sys.executable)
     app_name = pathlib.Path(sys.executable).stem
     APP_RUNMODE = 'PROD'
-    time.sleep(APP_TMT)
+    time.sleep(APP_TMT_START)
 else:
     app_path = dirname(__file__)
     app_name = pathlib.Path(__file__).stem
