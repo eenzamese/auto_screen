@@ -15,9 +15,9 @@ import win32gui # type: ignore # pylint: disable=import-error
 
 
 # timeouts
-SEARCH_TMT = 10
-APP_TMT = 60
-APP_TMT_START = 300
+SEARCH_TMT = 60
+APP_TMT_START = 60
+
 
 # check environment
 if getattr(sys, 'frozen', False):
@@ -67,7 +67,7 @@ except Exception as ex: # pylint: disable=broad-exception-caught
 
 # load configs
 WINDOW_TITLE_CONTENT = conf_data['WINDOW_TITLE_CONTENT']
-print(WINDOW_TITLE_CONTENT)
+logger.info('Window content for duplicates search is %s', WINDOW_TITLE_CONTENT)
 WINDOW_TITLE_RGX = f".*{WINDOW_TITLE_CONTENT}.*"
 INPUT = conf_data['INPUT']
 
@@ -118,7 +118,6 @@ flag = 0
 while True:
     try:
         logger.info('Searching window')
-        print(WINDOW_TITLE_RGX)
         w.find_window_wildcard(WINDOW_TITLE_RGX)
         logger.info('Setting window foreground')
         w.set_foreground()
@@ -140,7 +139,7 @@ while True:
         if flag > 3:
             os.system("shutdown /r")
         logger.info('Picture successfully saved')
-        time.sleep(60)
+        time.sleep(SEARCH_TMT)
     except Exception as ex: # pylint: disable=broad-exception-caught
         logger.warning('Window processing return exception - %s', str(ex))
         time.sleep(SEARCH_TMT)
