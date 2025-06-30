@@ -12,6 +12,7 @@ from os import sep
 from os.path import dirname
 import pyautogui # pylint: disable=import-error
 import win32gui # type: ignore # pylint: disable=import-error
+import win32com.client
 
 
 # timeouts
@@ -80,6 +81,7 @@ class WindowMgr:
     def __init__(self):
         """Constructor"""
         self._handle = None
+        self.shell = win32com.client.Dispatch("WScript.Shell")
 
     def find_window(self, class_name, window_name=None):
         """find a window by its class_name"""
@@ -97,6 +99,7 @@ class WindowMgr:
 
     def set_foreground(self):
         """put the window in the foreground"""
+        self.shell.SendKeys('%')
         win32gui.SetForegroundWindow(self._handle)
 
     def get_window_pic(self):
