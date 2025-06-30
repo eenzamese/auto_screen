@@ -17,7 +17,7 @@ import win32com.client
 
 # timeouts
 SEARCH_TMT = 60
-APP_TMT_START = 60
+APP_TMT_START = 100
 
 
 # check environment
